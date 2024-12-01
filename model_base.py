@@ -50,7 +50,9 @@ class SimpleCNN(nn.Module):
         # 256
 
         self.head = nn.Sequential(
-            nn.Linear(256, 64),
+            nn.Linear(256, 128),
+            nn.LeakyReLU(),
+            nn.Linear(128, 64),
             nn.LeakyReLU(),
             nn.Linear(64, output_class)
         )

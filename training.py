@@ -1,4 +1,5 @@
 import torch
+import os
 import random
 import numpy as np
 
@@ -11,16 +12,18 @@ from helper_tester import ModelTesterMetrics
 from dataset import SimpleTorchDataset
 from torchvision import transforms
 
+os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
 SEED = 424242
 torch.manual_seed(SEED)
 random.seed(SEED)
 np.random.seed(SEED)
 
-torch.use_deterministic_algorithms(True)
+#torch.use_deterministic_algorithms(True)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-total_epochs = 64
-batch_size = 16
+
+total_epochs = 100
+batch_size = 64
 
 if __name__ == "__main__":
     print("| Pytorch Model Training !")
@@ -37,13 +40,14 @@ if __name__ == "__main__":
 
     # Using SimpleCNN with 5 output classes (chair, cupboard, fridge, table, tv)
     model = SimpleCNN(7).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.00001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)
 
     # Optional training augmentations
     training_augmentation = [
-        transforms.RandomHorizontalFlip(),
+        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+        transforms.RandomGrayscale(p=0.1),
         transforms.RandomRotation(15),
-        transforms.ColorJitter(brightness=0.2, contrast=0.2)
+        transforms.RandomHorizontalFlip()
     ]
 
     # Initialize datasets with the new processed data paths
