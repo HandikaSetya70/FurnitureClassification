@@ -7,6 +7,7 @@ from tqdm import tqdm
 from torch.utils.data import DataLoader
 
 from helper_logger import DataLogger
+from model_base import SimpleNet2D
 from model_base import SimpleCNN
 from helper_tester import ModelTesterMetrics
 from dataset import SimpleTorchDataset
@@ -23,7 +24,7 @@ np.random.seed(SEED)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 total_epochs = 100
-batch_size = 64
+batch_size = 32
 
 if __name__ == "__main__":
     print("| Pytorch Model Training !")
@@ -38,7 +39,7 @@ if __name__ == "__main__":
     metrics.loss = torch.nn.BCEWithLogitsLoss()
     metrics.activation = torch.nn.Softmax(1)
 
-    # Using SimpleCNN with 5 output classes (chair, cupboard, fridge, table, tv)
+    # Model 
     model = SimpleCNN(7).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)
 
